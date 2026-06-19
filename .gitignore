@@ -15,6 +15,11 @@ env/
 data/
 *.parquet
 
+# Airflow (artefacts d'execution locaux)
+airflow/logs/
+airflow/plugins/
+airflow/config/
+
 # OS / IDE
 .DS_Store
 .vscode/
