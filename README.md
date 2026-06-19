@@ -12,8 +12,8 @@ un détecteur de fake news, de l'extraction jusqu'au monitoring.
 | 3 | Pipeline de transformation reproductible | [src/transformation.py](src/transformation.py) | 3 | ✅ |
 | 4 | Schéma de données (Mermaid) | [docs/schema_donnees.md](docs/schema_donnees.md) | 3 | ✅ |
 | 5 | Flux ETL Airflow | [airflow/dags/checkit_etl_dag.py](airflow/dags/checkit_etl_dag.py) | 4 | ✅ |
-| 6 | Tableau de bord KPI | _à venir_ | 5 | ⏳ |
-| 7 | Plan de monitoring | _à venir_ | 5 | ⏳ |
+| 6 | Tableau de bord KPI | [src/dashboard_kpi.py](src/dashboard_kpi.py) | 5 | ✅ |
+| 7 | Plan de monitoring | [docs/plan_monitoring.md](docs/plan_monitoring.md) | 5 | ✅ |
 
 ## Prérequis
 
@@ -71,6 +71,18 @@ docker compose --project-directory airflow -f airflow/docker-compose.yaml --env-
 Interface web : http://localhost:8080 (identifiants par défaut `airflow` / `airflow`).
 Le DAG est déclenché manuellement (`schedule=None`). Les données chargées sont disponibles
 dans la base PostgreSQL `checkit` (port hôte `5433`).
+
+### Tableau de bord KPI (étape 5)
+
+Visualise les indicateurs du pipeline (qualité, rapidité, volume). Nécessite que la stack
+Airflow tourne et que le DAG ait été exécuté au moins une fois.
+
+```bash
+uv run streamlit run src/dashboard_kpi.py
+```
+
+Le tableau de bord s'ouvre sur http://localhost:8501. Le plan de monitoring associé est
+décrit dans [docs/plan_monitoring.md](docs/plan_monitoring.md).
 
 ## Structure du projet
 
