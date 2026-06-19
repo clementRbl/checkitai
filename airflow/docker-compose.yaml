@@ -51,6 +51,10 @@ services:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
+    ports:
+      # Expose sur 5434 cote hote : permet au tableau de bord KPI (etape 5) de lire
+      # les durees d'execution des taches dans les metadonnees d'Airflow.
+      - "5434:5432"
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
