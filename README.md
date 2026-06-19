@@ -11,7 +11,7 @@ un détecteur de fake news, de l'extraction jusqu'au monitoring.
 | 2 | Script d'extraction automatisée | [src/extraction_newsdata.py](src/extraction_newsdata.py) | 2 | ✅ |
 | 3 | Pipeline de transformation reproductible | [src/transformation.py](src/transformation.py) | 3 | ✅ |
 | 4 | Schéma de données (Mermaid) | [docs/schema_donnees.md](docs/schema_donnees.md) | 3 | ✅ |
-| 5 | Flux ETL Airflow | _à venir_ | 4 | ⏳ |
+| 5 | Flux ETL Airflow | [airflow/dags/checkit_etl_dag.py](airflow/dags/checkit_etl_dag.py) | 4 | ✅ |
 | 6 | Tableau de bord KPI | _à venir_ | 5 | ⏳ |
 | 7 | Plan de monitoring | _à venir_ | 5 | ⏳ |
 
@@ -55,10 +55,29 @@ uv run python src/transformation.py
 Par défaut, le pipeline transforme le dernier fichier brut de `data/`. On peut cibler un
 fichier précis avec `--input chemin/vers/fichier.json`.
 
+### Flux ETL Airflow (étape 4)
+
+Le DAG `checkit_etl` automatise les trois étapes (`extract` → `transform` → `load`) et
+charge les données dans une base PostgreSQL dédiée. La stack tourne en local via Docker.
+
+```bash
+# Copier le modèle de configuration et renseigner la clé API + l'UID
+cp airflow/.env.example airflow/.env
+
+# Démarrer la stack (Airflow + PostgreSQL)
+docker compose --project-directory airflow -f airflow/docker-compose.yaml --env-file airflow/.env up -d
+```
+
+Interface web : http://localhost:8080 (identifiants par défaut `airflow` / `airflow`).
+Le DAG est déclenché manuellement (`schedule=None`). Les données chargées sont disponibles
+dans la base PostgreSQL `checkit` (port hôte `5433`).
+
 ## Structure du projet
 
 ```
 .
+├── airflow/               # Flux ETL Airflow (DAG + docker-compose)
+│   └── dags/              # Définition du DAG checkit_etl
 ├── docs/                  # Rapports et schémas (livrables documentaires)
 ├── src/                   # Scripts Python (extraction, transformation)
 ├── data/                  # Données brutes et transformées (non versionnées)
