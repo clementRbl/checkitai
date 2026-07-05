@@ -16,7 +16,7 @@ import json
 import logging
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
 import psycopg2
@@ -241,6 +241,12 @@ with DAG(
     schedule=None,  # declenchement manuel pour la demo
     catchup=False,
     tags=["checkitai", "etl"],
+    # Retries appliques a chaque tache : on absorbe les incidents reseau transitoires
+    # (API ou base momentanement indisponibles) sans faire echouer tout le run.
+    default_args={
+        "retries": 2,
+        "retry_delay": timedelta(minutes=1),
+    },
 ) as dag:
     extract_task = PythonOperator(task_id="extract", python_callable=extract)
     transform_task = PythonOperator(task_id="transform", python_callable=transform)

@@ -18,7 +18,9 @@ x-airflow-common:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__CORE__FERNET_KEY: ''
+    # Cle Fernet : chiffre les connexions et variables sensibles stockees par Airflow.
+    # Fournie via .env (generee une fois) plutot que laissee vide.
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     # On masque les DAG d'exemple pour garder l'UI focalisee sur notre pipeline.
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
