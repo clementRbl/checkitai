@@ -15,6 +15,8 @@ Un point que je veux poser tout de suite parce qu'il a guidé mes choix : on cib
 
 ## 2. Comment j'ai jugé les sources
 
+Pour repérer les sources je me suis appuyé sur les moteurs de recherche de jeux de données et d'API : **Google Dataset Search** et **Hugging Face Datasets** pour les datasets labellisés, **Kaggle** pour les jeux prêts à l'emploi, et **public-apis.io** pour les API ouvertes. J'ai croisé ça avec les médias que je lis au quotidien, ce qui m'a amené à la piste des flux RSS.
+
 Pour chaque source je regarde six choses :
 
 - est-ce qu'on a vraiment **texte + image associés** dans la même entrée ;
@@ -46,9 +48,11 @@ Peu importe la source, je veux ramener tout le monde vers une structure commune.
 
 Le champ `label` n'est pas toujours rempli et c'est assumé. Seules les sources labellisées (FakeNewsNet) le remplissent vraiment. Pour les autres il reste vide.
 
+Même logique pour `fiabilite_declaree` : c'est un champ transverse qui dépend de la source. Reddit expose un flair et un score, un flux RSS peut porter une catégorie ; NewsData.io n'expose rien de tel, donc ce champ reste vide pour cette source — c'est pourquoi il n'apparaît pas dans le schéma des données NewsData.io de l'étape 3.
+
 Règle non négociable au moment de l'extraction : si une entrée n'a pas **et** un texte **et** une image, je la jette. Sinon je me retrouve avec des paires bancales en aval.
 
-## 4. Les trois sources que je retiens
+## 4. Les sources que je retiens
 
 ### 4.1 FakeNewsNet : le dataset labellisé
 
@@ -89,17 +93,30 @@ Réseau social cité dans les recommandations. Les subreddits d'actu (`r/news`, 
 
 Deux choses à surveiller. Tous les posts n'ont pas d'image (il faut filtrer ceux qui en ont vraiment une exploitable) et le label via les votes ne vaut rien comme vérité terrain. À traiter comme du signal social et pas comme une vérité.
 
+### 4.4 Flux RSS de médias : le canal officiel le plus simple
+
+Les grands médias publient des **flux RSS** ouverts (Le Monde, France Info, Reuters…). C'est le canal officiel par excellence : pas de clé, pas de scraping, un format standard et stable, prévu par l'éditeur pour être réutilisé.
+
+- **Données** : titre + description/chapô + image de l'article (portée dans le flux par `media:content`, `media:thumbnail` ou une `enclosure`)
+- **Format** : XML RSS/Atom, parsé en dictionnaire par `feedparser`
+- **Langue** : selon le média (FR pour Le Monde/France Info, EN pour Reuters)
+- **Labels** : aucun. Comme NewsData.io, c'est un flux d'actu à analyser, pas une vérité terrain.
+- **Droits** : flux publics destinés à la syndication, donc usage explicitement autorisé par l'éditeur. Plus propre que de scraper le site.
+- **Extraction** : `feedparser`, en ne gardant que les entrées portant réellement une image exploitable.
+
+Deux réserves. Tous les médias n'incluent pas d'image dans leur flux (il faut choisir des flux qui le font et filtrer les entrées sans image), et la description est parfois un chapô tronqué plutôt que l'article complet — ce qui reste suffisant pour le NLP.
+
 ## 5. Synthèse
 
-| | FakeNewsNet | NewsData.io | Reddit |
-|---|---|---|---|
-| Texte + image | oui | oui (`image_url`) | oui (posts image) |
-| Format | CSV + scripts | API / JSON | API / JSON |
-| Langue | EN | Multi (FR/EN) | EN |
-| Labels vrai/faux | bons (fact-checkers) | aucun | aucun (signaux faibles) |
-| Droits | recherche | clé + quotas | API OAuth |
-| Extraction | dépôt + API | `requests` | `PRAW` |
-| Rôle | entraînement supervisé | flux à analyser | flux à analyser |
+| | FakeNewsNet | NewsData.io | Reddit | Flux RSS |
+|---|---|---|---|---|
+| Texte + image | oui | oui (`image_url`) | oui (posts image) | oui (`media:content`) |
+| Format | CSV + scripts | API / JSON | API / JSON | XML RSS/Atom |
+| Langue | EN | Multi (FR/EN) | EN | FR/EN selon média |
+| Labels vrai/faux | bons (fact-checkers) | aucun | aucun (signaux faibles) | aucun |
+| Droits | recherche | clé + quotas | API OAuth | flux public (syndication) |
+| Extraction | dépôt + API | `requests` | `PRAW` | `feedparser` |
+| Rôle | entraînement supervisé | flux à analyser | flux à analyser | flux à analyser |
 
 ## 6. Format de sortie : JSON
 
@@ -111,11 +128,12 @@ Pour le stockage final (Étape 4), Parquet sera sûrement plus malin niveau comp
 
 ## 7. Ce que je recommande pour la suite
 
-Je garde les trois sources, elles sont complémentaires :
+Je garde les quatre sources, elles sont complémentaires :
 
 - **FakeNewsNet** pour les labels fiables (la seule à en avoir).
 - **NewsData.io** pour un flux d'actu officiel et multilingue.
 - **Reddit** pour du multimodal social via un canal officiel.
+- **Flux RSS** pour du multimodal éditorial via le canal le plus léger et le plus explicitement autorisé.
 
 Le point que je veux être clair là-dessus : **seul FakeNewsNet apporte une vérité terrain solide**. Les deux autres apportent du volume frais et multimodal mais sans label. Elles servent à alimenter le moteur et pas à l'entraîner en supervisé. Je préfère le dire franchement plutôt que de faire passer des votes Reddit pour des labels.
 

@@ -38,8 +38,8 @@ La gestion est en partie **déjà automatisée** dans le code et le DAG :
   `try/except` avec journalisation (`logging`). L'erreur HTTP 429 (quota dépassé) est
   identifiée explicitement.
 - **Au niveau d'Airflow** :
-  - **Retries** : configurer `retries=2` et `retry_delay` sur les tâches pour absorber
-    les incidents réseau transitoires.
+  - **Retries** : `retries=2` et `retry_delay` (1 min) sont définis sur les tâches du DAG
+    (via `default_args`) pour absorber les incidents réseau transitoires.
   - **Dépendances** : `transform` ne s'exécute que si `extract` a réussi, et `load`
     que si `transform` a réussi (enchaînement du DAG). Une erreur stoppe la chaîne.
   - **Alertes** : `email_on_failure` ou un callback (`on_failure_callback`) vers une
