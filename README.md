@@ -19,8 +19,26 @@ Les quatre sources retenues (FakeNewsNet, NewsData.io, Reddit, flux RSS) sont d�
 dans le [rapport d'exploration](docs/rapport_exploration_sources.md). L'extraction automatisée
 cible NewsData.io.
 
+## Parcours d'exécution
+
+Toutes les étapes ci-dessous, dans l'ordre. Les sections 3 et 4 (scripts autonomes)
+et la section 5 (flux Airflow) sont deux façons de faire tourner le même pipeline :
+
+1. **Installation** des dépendances (§1)
+2. **Configuration** des fichiers `.env` (§2)
+3. **Extraction** → écrit un JSON brut dans `data/` (§3)
+4. **Transformation** → écrit un JSON nettoyé dans `data/processed/` (§4)
+5. **Flux ETL Airflow** → automatise extract → transform → load en base PostgreSQL,
+   avec ses propres données dans `airflow/data/` (§5)
+6. **Tableau de bord KPI** → lit la base et les fichiers d'`airflow/data/` produits par le DAG (§6)
+
+Le schéma de données ([docs/schema_donnees.md](docs/schema_donnees.md)) et le plan de
+monitoring ([docs/plan_monitoring.md](docs/plan_monitoring.md)) sont des livrables
+documentaires : ils se consultent directement (le schéma Mermaid s'affiche sur GitHub).
+
 ## Prérequis
 
+- **Python 3.12** (installé automatiquement par `uv` si absent).
 - **[uv](https://docs.astral.sh/uv/)** — gestion des dépendances et de l'environnement Python.
 - **Docker** (avec `docker compose`) — pour la stack Airflow de l'étape 4.
 - Une **clé API [NewsData.io](https://newsdata.io/)** (offre gratuite suffisante pour la démo).
@@ -63,7 +81,7 @@ Renseignez :
 - `AIRFLOW_FERNET_KEY` — clé de chiffrement des secrets Airflow, à générer **une seule fois** :
 
 ```bash
-python -c "import base64,os; print(base64.urlsafe_b64encode(os.urandom(32)).decode())"
+uv run python -c "import base64,os; print(base64.urlsafe_b64encode(os.urandom(32)).decode())"
 ```
 
 ## 3. Extraction (étape 2)

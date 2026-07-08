@@ -153,6 +153,7 @@ name = "checkitai"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "altair" },
     { name = "pandas" },
     { name = "psycopg2-binary" },
     { name = "python-dotenv" },
@@ -162,6 +163,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "altair", specifier = ">=6.2.1" },
     { name = "pandas", specifier = ">=3.0.3" },
     { name = "psycopg2-binary", specifier = ">=2.9.12" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
