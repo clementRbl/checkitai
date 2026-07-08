@@ -168,4 +168,13 @@ Les données sont stockées en JSON, un objet par publication. Chaque entrée as
 **obligatoirement un texte et une image valides** (aucune entrée orpheline). Le schéma
 conceptuel complet (champs, types, rôle dans le cas d'usage) est décrit dans
 [docs/schema_donnees.md](docs/schema_donnees.md).
-```
+
+## Les 7 livrables
+
+- [1. Rapport d'exploration de sources](docs/rapport_exploration_sources.md) — Markdown
+- [2. Script d'extraction automatisée](src/extraction_newsdata.py) — Python
+- [3. Pipeline de transformation reproductible](src/transformation.py) — Python
+- [4. Schéma de données](docs/schema_donnees.md) — Mermaid
+- [5. Flux ETL Airflow](airflow/dags/checkit_etl_dag.py) — Python
+- [6. Tableau de bord KPI](src/dashboard_kpi.py) — Python
+- [7. Plan de monitoring](docs/plan_monitoring.md) — Markdown
