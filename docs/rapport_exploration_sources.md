@@ -136,5 +136,3 @@ Je garde les quatre sources, elles sont complémentaires :
 - **Flux RSS** pour du multimodal éditorial via le canal le plus léger et le plus explicitement autorisé.
 
 Le point que je veux être clair là-dessus : **seul FakeNewsNet apporte une vérité terrain solide**. Les deux autres apportent du volume frais et multimodal mais sans label. Elles servent à alimenter le moteur et pas à l'entraîner en supervisé. Je préfère le dire franchement plutôt que de faire passer des votes Reddit pour des labels.
-
-Pour l'Étape 2 je commence par **NewsData.io** : canal officiel, JSON natif, multimodal, et assez simple pour écrire un premier script d'extraction robuste qui tourne sans intervention. Reddit viendra ensuite comme deuxième source histoire de prouver que le pipeline est bien modulaire et pas collé à une seule API.
