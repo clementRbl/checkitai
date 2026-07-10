@@ -155,7 +155,8 @@ décrit dans [docs/plan_monitoring.md](docs/plan_monitoring.md).
 │   ├── docker-compose.yaml   # Stack locale (Airflow + PostgreSQL métier)
 │   └── .env.example          # Modèle de configuration Airflow
 ├── docs/                     # Livrables documentaires (rapports, schéma, monitoring)
-│   └── pdf/                  # Versions PDF des documents
+│   ├── pdf/                  # Versions PDF des documents
+│   └── captures/             # Captures d'écran (Airflow, tableau de bord KPI)
 ├── src/                      # Scripts Python (extraction, transformation, dashboard)
 ├── data/                     # Données brutes et transformées (non versionnées)
 ├── .env.example              # Modèle de configuration racine
@@ -181,3 +182,25 @@ conceptuel complet (champs, types, rôle dans le cas d'usage) est décrit dans
 - [7. Plan de monitoring](docs/plan_monitoring.md) — Markdown ([PDF](docs/pdf/plan_monitoring.pdf))
 
 Les versions PDF des trois livrables documentaires sont regroupées dans `docs/pdf/`.
+
+## Captures d'écran
+
+Le dossier [docs/captures/](docs/captures/) rassemble les preuves d'exécution du pipeline.
+
+**Flux ETL Airflow (étape 4)** — le DAG `checkit_etl` et ses trois exécutions réussies :
+
+| Capture | Contenu |
+|---------|---------|
+| [Liste des DAGs](docs/captures/01_airflow_liste_dags.png) | Le DAG `checkit_etl` actif, 3 exécutions |
+| [Détails du DAG](docs/captures/02_airflow_dag_details.png) | 3 exécutions, 3 succès, durée moyenne 3 s |
+| [Graphe du DAG](docs/captures/05_airflow_graphe_dag.png) | Enchaînement `extract → transform → load` |
+| [Durée de `extract`](docs/captures/03_airflow_tache_extract_duree.png) | Durée de la tâche d'extraction par exécution |
+| [Durée de `transform`](docs/captures/04_airflow_tache_transform_duree.png) | Durée de la tâche de transformation par exécution |
+| [Journal d'événements](docs/captures/06_airflow_journal_evenements.png) | Historique des exécutions et de leurs états |
+
+**Tableau de bord KPI (étape 5)** :
+
+| Capture | Contenu |
+|---------|---------|
+| [Qualité et rapidité](docs/captures/07_dashboard_qualite_rapidite.png) | Publications retenues, taux de validité, durée par étape |
+| [Volume et répartition](docs/captures/08_dashboard_volume_repartition.png) | Articles collectés, répartition par langue et par source |
