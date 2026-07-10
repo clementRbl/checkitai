@@ -155,6 +155,7 @@ décrit dans [docs/plan_monitoring.md](docs/plan_monitoring.md).
 │   ├── docker-compose.yaml   # Stack locale (Airflow + PostgreSQL métier)
 │   └── .env.example          # Modèle de configuration Airflow
 ├── docs/                     # Livrables documentaires (rapports, schéma, monitoring)
+│   └── pdf/                  # Versions PDF des documents
 ├── src/                      # Scripts Python (extraction, transformation, dashboard)
 ├── data/                     # Données brutes et transformées (non versionnées)
 ├── .env.example              # Modèle de configuration racine
@@ -171,10 +172,12 @@ conceptuel complet (champs, types, rôle dans le cas d'usage) est décrit dans
 
 ## Les 7 livrables
 
-- [1. Rapport d'exploration de sources](docs/rapport_exploration_sources.md) — Markdown
+- [1. Rapport d'exploration de sources](docs/rapport_exploration_sources.md) — Markdown ([PDF](docs/pdf/rapport_exploration_sources.pdf))
 - [2. Script d'extraction automatisée](src/extraction_newsdata.py) — Python
 - [3. Pipeline de transformation reproductible](src/transformation.py) — Python
-- [4. Schéma de données](docs/schema_donnees.md) — Mermaid
+- [4. Schéma de données](docs/schema_donnees.md) — Mermaid ([PDF](docs/pdf/schema_donnees.pdf))
 - [5. Flux ETL Airflow](airflow/dags/checkit_etl_dag.py) — Python
 - [6. Tableau de bord KPI](src/dashboard_kpi.py) — Python
-- [7. Plan de monitoring](docs/plan_monitoring.md) — Markdown
+- [7. Plan de monitoring](docs/plan_monitoring.md) — Markdown ([PDF](docs/pdf/plan_monitoring.pdf))
+
+Les versions PDF des trois livrables documentaires sont regroupées dans `docs/pdf/`.
